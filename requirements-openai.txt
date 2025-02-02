@@ -1,0 +1,9 @@
+discord.py == 2.4.0
+openai == 1.42.0
+scikit-learn == 1.5.1
+python-dotenv == 1.0.1
+google-api-python-client == 2.160.0
+pillow
+concurrent-log-handler
+aioboto3
+duckduckgo-search

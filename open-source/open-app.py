@@ -10,6 +10,9 @@ import aioboto3
 from PIL import Image
 from discord.ext import commands
 from concurrent_log_handler import ConcurrentRotatingFileHandler
+# Uncomment the following two lines to load environment variables from a .env file
+# from dotenv import load_dotenv
+# load_dotenv()
 
 #-------------------------------------------------#
 # Concurrent Log Handler
@@ -50,6 +53,10 @@ async def upload_to_s3(file_name, image, bucket_name='example'):
 	"""
 	Uploads the given image file to S3 bucket with the given filename and returns the image's new URL.
 	URL is public through ACL. All items expire after 1 day.
+	:param file_name: The name of the file to upload
+	:param image: The image file to upload
+	:param bucket_name: The name of the S3 bucket to upload the image to
+	:return: The URL of the uploaded image
 	"""
 	# Convert the Pillow image to a BytesIO object
 	img_byte_arr = io.BytesIO()
@@ -180,6 +187,14 @@ async def check_if_safe_for_work(base64_image):
 # Open source AI model - llamacpp
 #-------------------------------------------------#
 async def generate_llamacpp_response(message, sys_prompt="", host="localhost", port=8080):
+	""" 
+	Generates a response using the llamacpp model.
+	:param message: The message to generate a response for
+	:param sys_prompt: The system prompt to use
+	:param host: The host of the API
+	:param port: The port of the API
+	:return: The generated response
+	"""
 	payload = {
 		"model": "x",
 		"messages": [
@@ -214,6 +229,11 @@ tree = client.tree
 
 # Function to detect and wrap URLs in < and >
 def prevent_url_embeds(text):
+	""" 
+	Prevents Discord from embedding URLs in messages by wrapping them in angle brackets.
+	:param text: The text to prevent URL embedding in
+	:return: The text with URLs wrapped in angle brackets
+	"""
 	# Regular expression to match URLs
 	url_pattern = r'(https?://\S+)'
 	return re.sub(url_pattern, r'<\1>', text)
@@ -242,6 +262,10 @@ BASE_URL = f"https://{S3_BUCKET}.s3.amazonaws.com/{S3_PREFIX}"
 
 
 async def build_assets_map_s3():
+	""" 
+	Builds a map of assets from the S3 bucket.
+	:return: A dictionary mapping single-image commands to their URLs and a dictionary mapping directory commands to their URLs
+	"""
 	logger.debug("Starting build_assets_map_s3")
 	name_to_link = {}
 	dir_to_links = {}
@@ -291,6 +315,11 @@ async def build_assets_map_s3():
 
 
 def extract_inside_brackets(text):
+	""" 
+	Extracts the content inside square brackets from the given text.
+	:param text: The text to extract the content from
+	:return: The content inside the square brackets or an empty string
+	"""
 	# Attempt to match content inside square brackets
 	match = re.search(r'\[(.*?)\]', text)
 	# Return the matched content or an empty string

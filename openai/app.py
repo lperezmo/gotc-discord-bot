@@ -295,7 +295,7 @@ async def generate_json_call_for_summarize_function(natural_language_request):
 	)
 	return json.loads(completion.choices[0].message.content)
 
-async def decide_what_to_do(raw_message, image_urls=[]):
+async def decide_what_to_do(raw_message, name_of_bot=NAME_OF_BOT):
 	"""
 	Generate JSON with what to do next
 	:param raw_message: The raw message from the user
@@ -303,108 +303,108 @@ async def decide_what_to_do(raw_message, image_urls=[]):
 	:return: The JSON body for the next action
 	"""
 	sys_prompt = f"""Your job is to create the JSON body that tells the bot what to do next.
-	Your options include: (1) summarize, (2) gotc, (3) image, (4) help, (5) analyze_user, (6) web_search, (7) humor, (8) about_me, (9) generate_image, (10) miscellaneous, (12) about_chat, (13) calendar, (14) translate, or if nothing else fits then (15) none. Do process foreign languages, the 'todo' key should be in English, the 'language' key should indicate the name of the language to reply in. If they ask you ({NAME_OF_BOT}) a question directly it should categorize it as miscellaneous.
-	
+	Your options include: (1) summarize, (2) gotc, (3) image, (4) help, (5) analyze_user, (6) web_search, (7) humor, (8) about_me, (9) generate_image, (10) miscellaneous, (12) about_chat, (13) calendar, (14) translate, or if nothing else fits then (15) none. Do process foreign languages, the 'todo' key should be in English, the 'language' key should indicate the name of the language to reply in. If they ask you ({name_of_bot}) a question directly it should categorize it as miscellaneous.
+
 	If you get questions about creatures, building, or other game elements that could be considered part of game of thrones conquest game, categorize it as gotc.
 
-		Example A: Summarize channel conversation since yesterday.
-		Example JSON A:
-		{
-			"todo": "summarize",
-			"language": "english"
-		}
+	Example A: Summarize channel conversation since yesterday.
+	Example JSON A:
+	{{
+	"todo": "summarize",
+	"language": "english"
+	}}
 
-		Example B: {NAME_OF_BOT} tell me about me/analyze me
-		Example JSON B:
-		{
-			"todo": "analyze_user",
-			"language": "english"
-		}
+	Example B: {name_of_bot} tell me about me/analyze me
+	Example JSON B:
+	{{
+	"todo": "analyze_user",
+	"language": "english"
+	}}
 
-		Example C: {NAME_OF_BOT} que es el pale steel?
-		Example JSON C:
-		{
-			"todo": "gotc",
-			"language": "spanish"
-		}
+	Example C: {name_of_bot} que es el pale steel?
+	Example JSON C:
+	{{
+	"todo": "gotc",
+	"language": "spanish"
+	}}
 
-		Example D: {NAME_OF_BOT}, any news about gotc?
-		JSON D:
-		{
-			"todo": "web_search",
-			"language": "english"
-		}
+	Example D: {name_of_bot}, any news about gotc?
+	JSON D:
+	{{
+	"todo": "web_search",
+	"language": "english"
+	}}
 
-		Example E: yeah not like {NAME_OF_BOT}, that dude is wild haha
-		JSON E:
-		{
-			"todo": "humor",
-			"language": "english"
-		}
+	Example E: yeah not like {name_of_bot}, that dude is wild haha
+	JSON E:
+	{{
+	"todo": "humor",
+	"language": "english"
+	}}
 
-		Example F: sure, but lets make sure {NAME_OF_BOT} is in the loop
-		JSON F:
-		{
-			"todo": "none",
-			"language": "english"
-		}
+	Example F: sure, but lets make sure {name_of_bot} is in the loop
+	JSON F:
+	{{
+	"todo": "none",
+	"language": "english"
+	}}
 
-		Exampple G: {NAME_OF_BOT} tell me about me -or- {NAME_OF_BOT} analyze me
-		JSON G:
-		{
-			"todo": "about_me",
-			"language": "english"
-		}
+	Exampple G: {name_of_bot} tell me about me -or- {name_of_bot} analyze me
+	JSON G:
+	{{
+	"todo": "about_me",
+	"language": "english"
+	}}
 
-		Example H: {NAME_OF_BOT} write a love story about caim and iceman
-		JSON H:
-		{
-			"todo": "miscellaneous",
-			"language": "english"
-		}
+	Example H: {name_of_bot} write a love story about caim and iceman
+	JSON H:
+	{{
+	"todo": "miscellaneous",
+	"language": "english"
+	}}
 
-		Example I: {NAME_OF_BOT} what can you do
-		JSON I:
-		{
-			"todo": "help",
-			"language": "english"
-		}
+	Example I: {name_of_bot} what can you do
+	JSON I:
+	{{
+	"todo": "help",
+	"language": "english"
+	}}
 
-		Example J: whats mereneese honor and is it in regular creatures?
-		JSON J:
-		{
-			"todo": "miscellaneous",
-			"language": "english"
-		}
+	Example J: whats mereneese honor and is it in regular creatures?
+	JSON J:
+	{{
+	"todo": "miscellaneous",
+	"language": "english"
+	}}
 
-		Example K: {NAME_OF_BOT} make a song about the alliance
-		JSON K:
-		{
-			"todo" "about_chat",
-			"language": "english"
-		}
+	Example K: {name_of_bot} make a song about the alliance
+	JSON K:
+	{{
+	"todo" "about_chat",
+	"language": "english"
+	}}
 
-		Exam0ple L: {NAME_OF_BOT}, when is the next building event?
-		JSON L:
-		{
-			"todo": "calendar",
-			"language": "english"
-		}
+	Example L: {name_of_bot}, when is the next building event?
+	JSON L:
+	{{
+	"todo": "calendar",
+	"language": "english"
+	}}
 
-		Example M: {NAME_OF_BOT}, show calendar
-		JSON M:
-		{
-			"todo": "calendar",
-			"language": "english"
-		}
+	Example M: {name_of_bot}, show calendar
+	JSON M:
+	{{
+	"todo": "calendar",
+	"language": "english"
+	}}
 
-		Example N: {NAME_OF_BOT}, translate how come erion to french
-		JSON N:
-		{
-			"todo": "translate",
-			"language": "french"
-		}
-		"""
+	Example N: {name_of_bot}, translate how come erion to french
+	JSON N:
+	{{
+	"todo": "translate",
+	"language": "french"
+	}}
+	"""
 	completion = await asyncio.to_thread(
 		ai_client.chat.completions.create,
 		model="gpt-4o",
@@ -444,7 +444,7 @@ async def what_user_are_they_talking_about(message, name_of_bot=NAME_OF_BOT):
 	"""
 	system_prompt = f"""Your job is to return a JSON with the full username of the user they are talking about.
 	Example: hey {name_of_bot}, analyze user 'john_doe333'
-	JSON: {"user": "john_doe333"}"""
+	JSON: {{"user": "john_doe333"}}"""
 	res = await asyncio.to_thread(
 		ai_client.chat.completions.create,
 		model="gpt-4o-mini",
@@ -909,7 +909,7 @@ async def get_json_preferred_language(message, name_of_bot=NAME_OF_BOT):
 	"""
 	sys_prompt = f"""Your task is to extract the preferred language from the user message and create a JSON object with the preferred language.
 	Example: {name_of_bot}, tell me about me
-	JSON: {"language": "english"}"""
+	JSON: {{"language": "english"}}"""
 	res = await asyncio.to_thread(
 		ai_client.chat.completions.create,
 		model="gpt-4o-mini",
